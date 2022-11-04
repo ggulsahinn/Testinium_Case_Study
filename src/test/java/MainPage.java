@@ -156,12 +156,23 @@ public class MainPage extends BaseTest{
 
     }
 
-    public void productDelete(){
+    @Test
+    public void productRemove(){
+        //Network logosuna tıklanır
         driver.findElement(By.cssSelector("a.header__logoImg")).click();
-        WebElement basketIcon = driver.findElement(By.cssSelector("button.js-basket-trigger"));
-        basketIcon.click();
-        
-
+        //Anasayfadaki sepek iconuna tıklanır sepet açılır
+        driver.findElement(By.cssSelector("button.js-basket-trigger")).click();
+        Thread.sleep(1000);
+        //Sepetteki ürünü silmek için icona tıklanır
+        driver.findElement(By.cssSelector(".header__basketModal.-remove")).click();
+        Thread.sleep(1000);
+        //Çıkartmak için onay verilir
+        driver.findElement(By.cssSelector("data-remove-cart-item")).click();
+        Thread.sleep(1000);
+        List<WebElement> basketCount = driver.findElements(By.cssSelector("span.header__basket--count"));
+        if(basketCount.size() == 0) {
+            logger.info("Ürün sepetten çıkarıldı.");
+        }
 
     }
 
