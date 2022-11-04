@@ -5,13 +5,25 @@ import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import org.junit.Assert;
+
+import java.awt.*;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.List;
 import static org.junit.Assert.*;
+import com.opencsv.CSVReader;
+import userLogin.userLogin;
 
 public class MainPage extends BaseTest{
 
     public String url2 = "https://www.network.com.tr/search?searchKey=ceket&page=2";
-    public String cartUrl = "https://www.network.com.tr/cart";
+    private Label price;
+    public String addPrice = price.getText();
+
+    private Label size;
+    public String addSize = price.getText();
+
 
 
 
@@ -20,6 +32,7 @@ public class MainPage extends BaseTest{
         //when
         // when it goes to main page
         //then
+
         //baseUrl verdiğimiz url ile aynı mı kontrol sağlar.
         assertEquals(baseUrl,driver.getCurrentUrl());
     }
@@ -40,7 +53,6 @@ public class MainPage extends BaseTest{
         Actions action= new Actions(driver);
         action.moveToElement(elementMore).perform();
         elementMore.click();
-        //needs to be wait
 
         //then
         String driverCurrent = driver.getCurrentUrl();
@@ -56,11 +68,8 @@ public class MainPage extends BaseTest{
 
         //when
 
-        //List <WebElement> firstProduct = driver.findElements(By.cssSelector(".product__discountPercent:nth-child(1)"));
-        WebElement product = driver.findElement(By.xpath("(.//*[@class='product__discountPercent'])[1]"));
-
         //İlk gelen indirimli ürün
-        //System.out.println(products.getText());
+        WebElement product = driver.findElement(By.xpath("(.//*[@class='product__discountPercent'])[1]"));
 
         //İndirimli üzerine hover
         Actions action = new Actions(driver);
@@ -69,13 +78,15 @@ public class MainPage extends BaseTest{
         //then
 
         List <WebElement> sizes = driver.findElements(By.xpath("(//*[@class='product__discountPercent'])[1]//..//..//..//div[@class='product__header']//div[@class='product__sizeItem']//div[@class='product__size -productCart radio-box']"));
-        //sizes.stream().findFirst();
         Thread.sleep(1000);
 
+        //Ürün fiyatı
+        WebElement price = driver.findElement(By.cssSelector(".product__price -actual"));
 
-
+        //Ürün bedeni
         for (WebElement size:sizes) {
             if(size.getAttribute("-disabled") == null){
+                String addSize = size.getText();
                 Thread.sleep(100);
                 action.moveToElement(size).perform();
                 size.click();
@@ -83,14 +94,75 @@ public class MainPage extends BaseTest{
             }
         }
 
-
-        WebElement goToCart = driver.findElement(By.xpath(".//href[@class='header__basket--checkout']"));
+        WebElement addToBasket = driver.findElement(By.cssSelector(".-addToBasket"));
+        addToBasket.click();
         Thread.sleep(1000);
+        WebElement goToCart = driver.findElement(By.cssSelector("a.header__basketModal.-checkout"));
         goToCart.click();
+    }
 
-        assertEquals(cartUrl,driver.getCurrentUrl());
+    @Test
+    public void basketCheck(){
+
+        //Sepet bedeni ile eklenen beden aynı mı kontrol edilir
+        WebElement basketSize = driver.findElement(By.cssSelector(".cartItem__attr.-size span.cartItem__attrValue"));
+        Assert.assertEquals(addSize,basketSize);
+
+        //Sepet fiyatı ile eklenen beden aynı mı kontrol edilir
+        WebElement basketPrice = driver.findElement(By.cssSelector(".cartItem__price.-sale"));
+        String basketPrice_str = basketPrice.getText();
+        Assert.assertEquals(addPrice,basketPrice);
+
+        //İndirimli fiyat ile eski fiyat aynı mı kontrol edilir
+        WebElement oldPrice = driver.findElement(By.cssSelector("cartItem__price.-old.-labelPrice"));
+        String oldPrice_str = oldPrice.getText();
+        Assert.assertEquals(addPrice,oldPrice);
+
+        //Ürünün eski fiyatı indirimli fiyatından büyük mü kontrol edilir
+        int basketPrice_int = Integer.parseInt(basketPrice_str);
+        oldPrice_str = oldPrice_str.replace("TL","").replaceAll(" ","").replace(".","").replace(",", "");
+
+        int oldPrice_int = Integer.parseInt(oldPrice_str);
+
+        if(oldPrice_int > basketPrice_int){
+            logger.info("Eski ürün fiyatı indirimli fiyattan yüksek.");
+        }
+        else{
+            logger.warning("Eski ürün fiyatı indirimli fiyattan  düşük.");
+        }
+
+        //Devam et butonuna tıklanır
+        WebElement continue_btn = driver.findElement(By.cssSelector(".continueButton.n-button.large"));
+        continue_btn.click();
 
     }
 
+    @Test
+    public userLogin IOException() {
+        String csvPath = "/user.csv";
+        File file = new File(csvPath);
+        CSVReader csvReader;
+        String[] csvValue;
+
+        csvReader = new CSVReader(new FileReader(csvPath));
+        while ((csvValue = csvReader.readNext()) != null) {
+            String email = csvValue[0];
+            String password = csvValue[1];
+            driver.findElement(By.id("n-input-email")).sendKeys(email);
+            driver.findElement(By.id("n-input-password")).sendKeys(password);
+        }
+
+        driver.findElement(By.cssSelector("n-button large block text-center -primary")).click();
+
+    }
+
+    public void productDelete(){
+        driver.findElement(By.cssSelector("a.header__logoImg")).click();
+        WebElement basketIcon = driver.findElement(By.cssSelector("button.js-basket-trigger"));
+        basketIcon.click();
+        
+
+
+    }
 
 }

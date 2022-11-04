@@ -4,11 +4,12 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-
-import java.io.File;
+import java.util.logging.Logger;
 
 
 public class BaseTest {
+    final static Logger logger = Logger.getLogger(String.valueOf(BaseTest.class));
+
     public static WebDriver driver;
     WebDriverWait wait;
     public static String baseUrl="https://www.network.com.tr/";
