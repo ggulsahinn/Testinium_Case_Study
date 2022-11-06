@@ -5,7 +5,6 @@ import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import org.junit.Assert;
-
 import java.awt.*;
 import java.io.File;
 import java.io.FileReader;
@@ -138,7 +137,7 @@ public class MainPage extends BaseTest{
     }
 
     @Test
-    public userLogin IOException() {
+    public userLogin IOException() throws IOException {
         String csvPath = "/user.csv";
         File file = new File(csvPath);
         CSVReader csvReader;
@@ -153,11 +152,11 @@ public class MainPage extends BaseTest{
         }
 
         driver.findElement(By.cssSelector("n-button large block text-center -primary")).click();
-
+        return null;
     }
 
     @Test
-    public void productRemove(){
+    public void productRemove() throws InterruptedException {
         //Network logosuna tıklanır
         driver.findElement(By.cssSelector("a.header__logoImg")).click();
         //Anasayfadaki sepek iconuna tıklanır sepet açılır
