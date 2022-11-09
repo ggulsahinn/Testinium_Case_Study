@@ -16,13 +16,11 @@ import userLogin.userLogin;
 
 public class MainPage extends BaseTest{
 
-    public String url2 = "https://www.network.com.tr/search?searchKey=ceket&page=2";
     private Label price;
     public String addPrice = price.getText();
 
     private Label size;
     public String addSize = price.getText();
-
 
 
 
@@ -39,6 +37,7 @@ public class MainPage extends BaseTest{
     @Test
     public void should_url_change_when_scrolling_to_second_page(){
         //given
+        //Çerezleri kabul et
         try {
             driver.findElement(By.cssSelector("button[id='onetrust-accept-btn-handler']")).click();
         } catch (Exception e){
