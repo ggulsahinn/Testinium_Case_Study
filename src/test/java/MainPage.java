@@ -123,10 +123,10 @@ public class MainPage extends BaseTest{
         int oldPrice_int = Integer.parseInt(oldPrice_str);
 
         if(oldPrice_int > basketPrice_int){
-            logger.info("Eski ürün fiyatı indirimli fiyattan yüksek.");
+            log.info("Eski ürün fiyatı indirimli fiyattan yüksek.");
         }
         else{
-            logger.warning("Eski ürün fiyatı indirimli fiyattan  düşük.");
+            log.error("Eski ürün fiyatı indirimli fiyattan  düşük.");
         }
 
         //Devam et butonuna tıklanır
@@ -169,7 +169,7 @@ public class MainPage extends BaseTest{
         Thread.sleep(1000);
         List<WebElement> basketCount = driver.findElements(By.cssSelector("span.header__basket--count"));
         if(basketCount.size() == 0) {
-            logger.info("Ürün sepetten çıkarıldı.");
+            log.info("Ürün sepetten çıkarıldı.");
         }
 
     }
